@@ -1,3 +1,4 @@
+import argparse
 import logging
 import datetime
 import os
@@ -8,6 +9,11 @@ from leg_audio_scrapping.lib.requests import web_get
 LOCAL_LEG_LISTING = 'file:///home/bill/Development/leg_audio_scrapping/assets/html/Legislative%20Media%20Archive%20-%20Legislative%20Reference%20Library.html'
 AUDIO_SAVE_PATH = "~/leg_audio"
 logging.basicConfig(level=logging.INFO)
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--uri', help='URI to a MN Legislative Media Archive page with audio', required=True)
+parser.add_argument('--dest', help='Path to a folder to save audio in. This folder must already exist.', required=True)
 
 
 def get_file_page_uris(uri):
@@ -75,7 +81,9 @@ def audio_dest_path(audio_date, date_index, dest_folder):
 
 
 if __name__ == '__main__':
-    file_page_uris = get_file_page_uris(LOCAL_LEG_LISTING)
+    args = parser.parse_args()
+
+    file_page_uris = get_file_page_uris(args.uri)
     # Create a flat array of audio URIs with dates
     audio_uris = [
         audio_uri
@@ -88,5 +96,5 @@ if __name__ == '__main__':
 
     for i, audio_dict in enumerate(audio_uris):
         logging.info(f'Getting file {i+1}/{total_audio_uris}')
-        dest = audio_dest_path(audio_dict['date'], audio_dict['index'] + 1, AUDIO_SAVE_PATH)
-        get_audio(audio_dict['uri'], dest)
+        audio_file_dest = audio_dest_path(audio_dict['date'], audio_dict['index'] + 1, args.dest)
+        get_audio(audio_dict['uri'], audio_file_dest)

@@ -1,3 +1,4 @@
+import argparse
 import csv
 import json
 import logging
@@ -5,6 +6,9 @@ import os
 from datetime import timedelta
 
 logging.basicConfig(level=logging.INFO)
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--json_path', help='Path to the JSON produced by SPX', required=True)
 
 
 def read_json_into_memory(path):
@@ -58,9 +62,12 @@ def write_json_to_csv(json_data, path):
 
 
 if __name__ == '__main__':
-    logging.info("Loading JSON file")
-    filepath = os.path.expanduser("~/leg_audio/output-all-continuous.json")  # TODO Make this a script argument
-    transcriptions = read_json_into_memory(filepath)
+    args = parser.parse_args()
 
-    logging.info("Writing CSV")
-    write_json_to_csv(transcriptions, os.path.splitext(filepath)[0] + '.csv')
+    json_path = os.path.expanduser(args.json_path)
+    logging.info(f'Loading JSON file {json_path}')
+    transcriptions = read_json_into_memory(json_path)
+
+    csv_path = os.path.splitext(json_path)[0] + '.csv'
+    logging.info(f'Writing CSV {csv_path}')
+    write_json_to_csv(transcriptions, csv_path)
