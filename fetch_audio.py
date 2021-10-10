@@ -6,13 +6,11 @@ import os
 from bs4 import BeautifulSoup
 from leg_audio_scrapping.lib.requests import web_get
 
-LOCAL_LEG_LISTING = 'file:///home/bill/Development/leg_audio_scrapping/assets/html/Legislative%20Media%20Archive%20-%20Legislative%20Reference%20Library.html'
-AUDIO_SAVE_PATH = "~/leg_audio"
 logging.basicConfig(level=logging.INFO)
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--uri', help='URI to a MN Legislative Media Archive page with audio', required=True)
+parser.add_argument('--uri', help='URI to a MN Legislative Media Archive page with audio. http(s):// and file:// URIs are supported.', required=True)
 parser.add_argument('--dest', help='Path to a folder to save audio in. This folder must already exist.', required=True)
 
 
